@@ -1,0 +1,21 @@
+version: '3.1'
+
+networks:
+  hedera-app-network:
+
+services:
+  
+  hedera-web-service:
+    container_name: hedera-web-service
+    build:
+      dockerfile: dockerfile.dev
+      context: ../HederaWebService
+    restart: unless-stopped
+    ports:
+      - "8001:11136"
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/build
+      - ../HederaWebService:/usr/src/app
+    networks:
+      - hedera-app-network
