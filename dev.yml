@@ -19,3 +19,27 @@ services:
       - ../HederaWebService:/usr/src/app
     networks:
       - hedera-app-network
+
+
+  hedera-mysql-service:
+    image: 'mysql:latest'
+    container_name: hedera-mysql-service
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: "123qwe!@#QWE"
+      MYSQL_DATABASE: hedera
+      MYSQL_USER: hedera
+      MYSQL_PASSWORD: "hedera_pass"
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - 'dbdata:/var/lib/mysql'
+    ports:
+      - 37117:3306
+    networks:
+      - hedera-app-network
+
+volumes:
+  dbdata:
+    driver: local
