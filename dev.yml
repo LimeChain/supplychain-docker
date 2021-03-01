@@ -4,6 +4,20 @@ networks:
   hedera-app-network:
 
 services:
+
+  hedera-mysql-service:
+    image: 'mysql:8.0.23'
+    container_name: hedera-mysql-service
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    env_file:
+      ./config/.env.mysql.dev
+    volumes:
+      - 'dbdata:/var/lib/mysql'
+    ports:
+      - 37117:3306
+    networks:
+      - hedera-app-network
   
   hedera-web-service:
     container_name: hedera-web-service
@@ -19,26 +33,8 @@ services:
       - ../HederaWebService:/usr/src/app
     networks:
       - hedera-app-network
-
-
-  hedera-mysql-service:
-    image: 'mysql:latest'
-    container_name: hedera-mysql-service
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: "123qwe!@#QWE"
-      MYSQL_DATABASE: hedera
-      MYSQL_USER: hedera
-      MYSQL_PASSWORD: "hedera_pass"
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - 'dbdata:/var/lib/mysql'
-    ports:
-      - 37117:3306
-    networks:
-      - hedera-app-network
+    depends_on:
+      - hedera-mysql-service
 
 volumes:
   dbdata:
