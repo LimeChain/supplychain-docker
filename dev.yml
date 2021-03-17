@@ -29,8 +29,8 @@ services:
       - "8001:11136"
     volumes:
       - /usr/src/app/node_modules
-      - /usr/src/app/build
       - ../HederaWebService:/usr/src/app
+      - ../HederaWebServiceData:/usr/src/data
     networks:
       - hedera-app-network
     depends_on:
