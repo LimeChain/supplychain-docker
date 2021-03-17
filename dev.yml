@@ -18,6 +18,45 @@ services:
       - 37117:3306
     networks:
       - hedera-app-network
+
+  hedera-mongodb-service:
+    image: 'mongo:latest'
+    container_name: hedera-mongodb-service
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pwc-bat-admin
+      MONGO_INITDB_ROOT_PASSWORD: pwc-bat-admin-pass
+      MONGO_INITDB_DATABASE: hcs-integration-node
+    volumes:
+      - 'mongodbdata:/data/db'
+      - './mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'
+    networks:
+      - hedera-app-network
+
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - 9081:8081
+    environment:
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      ME_CONFIG_MONGODB_SERVER: hedera-mongodb-service
+      ME_CONFIG_MONGODB_ADMINUSERNAME: pwc-bat-admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pwc-bat-admin-pass
+      ME_CONFIG_MONGODB_PORT: 27017
+    networks:
+      - hedera-app-network
+
+  hedera-integration-node:
+    container_name: hedera-integration-node
+    build:
+      dockerfile: dockerfile.dev
+      context: ../HederaIntegrationNode
+    restart: unless-stopped
+    depends_on:
+      - hedera-mongodb-service
+    networks:
+      - hedera-app-network
   
   hedera-web-service:
     container_name: hedera-web-service
@@ -35,7 +74,10 @@ services:
       - hedera-app-network
     depends_on:
       - hedera-mysql-service
+      - hedera-integration-node
 
 volumes:
   dbdata:
+    driver: local
+  mongodbdata:
     driver: local
