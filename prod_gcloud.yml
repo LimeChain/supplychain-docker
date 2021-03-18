@@ -1,0 +1,23 @@
+version: '3.1'
+
+networks:
+  hedera-app-network:
+
+services:
+
+  hedera-web-service:
+    container_name: hedera-web-service
+    build:
+      dockerfile: Dockerfile
+      context: ../HederaWebService
+    restart: always
+    ports:
+      - "8001:11136"
+    volumes:
+      - data-hedera:/usr/src/data
+    networks:
+      - hedera-app-network
+
+volumes:
+  data-hedera:
+    driver: local
