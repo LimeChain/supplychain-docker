@@ -54,6 +54,8 @@ services:
     restart: unless-stopped
     ports:
       - 8181:8181
+    volumes:
+      - ../HederaIntegrationNode:/usr/src/app
     depends_on:
       - hedera-mongodb-service
     networks:
