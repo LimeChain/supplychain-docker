@@ -26,10 +26,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: pwc-bat-admin
       MONGO_INITDB_ROOT_PASSWORD: pwc-bat-admin-pass
-      MONGO_INITDB_DATABASE: hcs-integration-node
     volumes:
       - 'mongodbdata:/data/db'
-      - './mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'
+      - './config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'
     networks:
       - hedera-app-network
 
@@ -53,6 +52,8 @@ services:
       dockerfile: dockerfile.dev
       context: ../HederaIntegrationNode
     restart: unless-stopped
+    ports:
+      - 8181:8181
     depends_on:
       - hedera-mongodb-service
     networks:
