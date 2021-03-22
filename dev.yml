@@ -80,43 +80,43 @@ services:
       - hedera-mysql-service
       - hedera-integration-node
 
-  hedera-web-service-02:
-    container_name: hedera-web-service-02
-    build:
-      dockerfile: dockerfile-02.dev
-      context: ../HederaWebService
-    restart: unless-stopped
-    ports:
-      - "8002:11136"
-    volumes:
-      - /usr/src/app/node_modules
-      - /usr/src/app/builds
-      - ../HederaWebService:/usr/src/app
-      - ../HederaWebServiceData02:/usr/src/data
-    networks:
-      - hedera-app-network
-    depends_on:
-      - hedera-mysql-service
-      - hedera-integration-node
+  # hedera-web-service-02:
+  #   container_name: hedera-web-service-02
+  #   build:
+  #     dockerfile: dockerfile-02.dev
+  #     context: ../HederaWebService
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8002:11136"
+  #   volumes:
+  #     - /usr/src/app/node_modules
+  #     - /usr/src/app/builds
+  #     - ../HederaWebService:/usr/src/app
+  #     - ../HederaWebServiceData02:/usr/src/data
+  #   networks:
+  #     - hedera-app-network
+  #   depends_on:
+  #     - hedera-mysql-service
+  #     - hedera-integration-node
 
-  hedera-web-service-03:
-    container_name: hedera-web-service-03
-    build:
-      dockerfile: dockerfile-03.dev
-      context: ../HederaWebService
-    restart: unless-stopped
-    ports:
-      - "8003:11136"
-    volumes:
-      - /usr/src/app/node_modules
-      - /usr/src/app/builds
-      - ../HederaWebService:/usr/src/app
-      - ../HederaWebServiceData03:/usr/src/data
-    networks:
-      - hedera-app-network
-    depends_on:
-      - hedera-mysql-service
-      - hedera-integration-node
+  # hedera-web-service-03:
+  #   container_name: hedera-web-service-03
+  #   build:
+  #     dockerfile: dockerfile-03.dev
+  #     context: ../HederaWebService
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8003:11136"
+  #   volumes:
+  #     - /usr/src/app/node_modules
+  #     - /usr/src/app/builds
+  #     - ../HederaWebService:/usr/src/app
+  #     - ../HederaWebServiceData03:/usr/src/data
+  #   networks:
+  #     - hedera-app-network
+  #   depends_on:
+  #     - hedera-mysql-service
+  #     - hedera-integration-node
 
 volumes:
   dbdata:
