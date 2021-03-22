@@ -14,6 +14,7 @@ services:
       ./config/.env.mysql.dev
     volumes:
       - 'dbdata:/var/lib/mysql'
+      - ./config:/docker-entrypoint-initdb.d
     ports:
       - 37117:3306
     networks:
@@ -61,10 +62,10 @@ services:
     networks:
       - hedera-app-network
   
-  hedera-web-service:
-    container_name: hedera-web-service
+  hedera-web-service-01:
+    container_name: hedera-web-service-01
     build:
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile-01.dev
       context: ../HederaWebService
     restart: unless-stopped
     ports:
@@ -72,7 +73,45 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - ../HederaWebService:/usr/src/app
-      - ../HederaWebServiceData:/usr/src/data
+      - ../HederaWebServiceData01:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-mysql-service
+      - hedera-integration-node
+
+  hedera-web-service-02:
+    container_name: hedera-web-service-02
+    build:
+      dockerfile: dockerfile-02.dev
+      context: ../HederaWebService
+    restart: unless-stopped
+    ports:
+      - "8002:11136"
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/builds
+      - ../HederaWebService:/usr/src/app
+      - ../HederaWebServiceData02:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-mysql-service
+      - hedera-integration-node
+
+  hedera-web-service-03:
+    container_name: hedera-web-service-03
+    build:
+      dockerfile: dockerfile-03.dev
+      context: ../HederaWebService
+    restart: unless-stopped
+    ports:
+      - "8003:11136"
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/builds
+      - ../HederaWebService:/usr/src/app
+      - ../HederaWebServiceData03:/usr/src/data
     networks:
       - hedera-app-network
     depends_on:
