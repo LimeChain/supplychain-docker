@@ -2,6 +2,10 @@ version: '3.1'
 
 networks:
   hedera-app-network:
+    ipam:
+      driver: default
+      config:
+          - subnet: 172.20.0.0/16
 
 services:
 
@@ -13,7 +17,7 @@ services:
     env_file:
       ./config/.env.mysql.dev
     volumes:
-      - 'dbdata:/var/lib/mysql'
+      - 'mysqldbdata:/var/lib/mysql'
       - ./config:/docker-entrypoint-initdb.d
     ports:
       - 37117:3306
@@ -47,10 +51,10 @@ services:
     networks:
       - hedera-app-network
 
-  hedera-integration-node:
-    container_name: hedera-integration-node
+  hedera-integration-node-01:
+    container_name: hedera-integration-node-01
     build:
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile-01.dev
       context: ../HederaIntegrationNode
     restart: unless-stopped
     ports:
@@ -60,7 +64,24 @@ services:
     depends_on:
       - hedera-mongodb-service
     networks:
-      - hedera-app-network
+      hedera-app-network:
+        ipv4_address: 172.20.0.200
+
+  hedera-integration-node-02:
+    container_name: hedera-integration-node-02
+    build:
+      dockerfile: dockerfile-02.dev
+      context: ../HederaIntegrationNode
+    restart: unless-stopped
+    ports:
+      - 8182:8182
+    volumes:
+      - ../HederaIntegrationNode:/usr/src/app
+    depends_on:
+      - hedera-mongodb-service
+    networks:
+      hedera-app-network:
+        ipv4_address: 172.20.0.201
   
   hedera-web-service-01:
     container_name: hedera-web-service-01
@@ -71,55 +92,60 @@ services:
     ports:
       - "8001:11136"
     volumes:
-      - /usr/src/app/node_modules
+      - webservicenodemodules:/usr/src/app/node_modules
       - ../HederaWebService:/usr/src/app
       - ../HederaWebServiceData01:/usr/src/data
     networks:
       - hedera-app-network
     depends_on:
       - hedera-mysql-service
-      - hedera-integration-node
+      - hedera-integration-node-01
+      - hedera-integration-node-02
 
-  # hedera-web-service-02:
-  #   container_name: hedera-web-service-02
-  #   build:
-  #     dockerfile: dockerfile-02.dev
-  #     context: ../HederaWebService
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8002:11136"
-  #   volumes:
-  #     - /usr/src/app/node_modules
-  #     - /usr/src/app/builds
-  #     - ../HederaWebService:/usr/src/app
-  #     - ../HederaWebServiceData02:/usr/src/data
-  #   networks:
-  #     - hedera-app-network
-  #   depends_on:
-  #     - hedera-mysql-service
-  #     - hedera-integration-node
+  hedera-web-service-02:
+    container_name: hedera-web-service-02
+    build:
+      dockerfile: dockerfile-02.dev
+      context: ../HederaWebService
+    restart: unless-stopped
+    ports:
+      - "8002:11136"
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/builds
+      - ../HederaWebService:/usr/src/app
+      - ../HederaWebServiceData02:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-mysql-service
+      - hedera-integration-node-01
+      - hedera-integration-node-02
 
-  # hedera-web-service-03:
-  #   container_name: hedera-web-service-03
-  #   build:
-  #     dockerfile: dockerfile-03.dev
-  #     context: ../HederaWebService
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8003:11136"
-  #   volumes:
-  #     - /usr/src/app/node_modules
-  #     - /usr/src/app/builds
-  #     - ../HederaWebService:/usr/src/app
-  #     - ../HederaWebServiceData03:/usr/src/data
-  #   networks:
-  #     - hedera-app-network
-  #   depends_on:
-  #     - hedera-mysql-service
-  #     - hedera-integration-node
+  hedera-web-service-03:
+    container_name: hedera-web-service-03
+    build:
+      dockerfile: dockerfile-03.dev
+      context: ../HederaWebService
+    restart: unless-stopped
+    ports:
+      - "8003:11136"
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/builds
+      - ../HederaWebService:/usr/src/app
+      - ../HederaWebServiceData03:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-mysql-service
+      - hedera-integration-node-01
+      - hedera-integration-node-02
 
 volumes:
-  dbdata:
+  mysqldbdata:
     driver: local
   mongodbdata:
+    driver: local
+  webservicenodemodules:
     driver: local
