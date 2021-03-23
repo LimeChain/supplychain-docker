@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f prod_gcloud.yml convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: hedera-mongodb-service
+  name: hedera-mongodb-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: hedera-mongodb-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f prod_gcloud.yml convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/hedera-app-network: "true"
+        io.kompose.service: hedera-mongodb-service
+    spec:
+      containers:
+        - env:
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: pwc-bat-admin-pass
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: pwc-bat-admin
+          image: mongo:latest
+          name: hedera-mongodb-service
+          ports:
+            - containerPort: 27017
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongodbdata
+      restartPolicy: Always
+      volumes:
+        - name: mongodbdata
+          persistentVolumeClaim:
+            claimName: mongodbdata
+status: {}

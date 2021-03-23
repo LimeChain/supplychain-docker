@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f prod_gcloud.yml convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: hedera-web-service-02
+  name: hedera-web-service-02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: hedera-web-service-02
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f prod_gcloud.yml convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/hedera-app-network: "true"
+        io.kompose.service: hedera-web-service-02
+    spec:
+      containers:
+        - image: gcr.io/pwc-bat-test/hedera-web-service-02:v23
+          name: hedera-web-service-02
+          ports:
+            - containerPort: 11136
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/src/data
+              name: data-hedera-02
+        - name: cloud-sql-proxy
+          # It is recommended to use the latest version of the Cloud SQL proxy
+          # Make sure to update on a regular schedule!
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          command:
+            - "/cloud_sql_proxy"
+
+            # If connecting from a VPC-native GKE cluster, you can use the
+            # following flag to have the proxy connect over private IP
+            # - "-ip_address_types=PRIVATE"
+
+            # Replace DB_PORT with the port the proxy should listen on
+            # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
+            - "-instances=pwc-bat-test:europe-west4:hedera=tcp:3306"
+          securityContext:
+            # The default Cloud SQL proxy image runs as the
+            # "nonroot" user and group (uid: 65532) by default.
+            runAsNonRoot: true
+      restartPolicy: Always
+      volumes:
+        - name: data-hedera-02
+          persistentVolumeClaim:
+            claimName: data-hedera-02
+status: {}

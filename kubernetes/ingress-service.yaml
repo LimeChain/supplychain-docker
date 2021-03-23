@@ -3,6 +3,21 @@ kind: Ingress
 metadata:
   name: ingress-service
 spec:
-  backend:
-    serviceName: hedera-web-service
-    servicePort: 8001
+  rules:
+    - http:
+        paths:
+          - path: /web-01/*
+            pathType: Prefix
+            backend:
+              serviceName: hedera-web-service-01
+              servicePort: 8001
+          - path: /web-02/*
+            pathType: Prefix
+            backend:
+              serviceName: hedera-web-service-02
+              servicePort: 8002
+          - path: /web-03/*
+            pathType: Prefix  
+            backend:
+              serviceName: hedera-web-service-03
+              servicePort: 8003

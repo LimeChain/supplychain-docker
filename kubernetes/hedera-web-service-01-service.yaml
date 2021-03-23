@@ -2,18 +2,18 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f prod_gcloud.yml
+    kompose.cmd: kompose -f prod_gcloud.yml convert
     kompose.version: 1.22.0 (955b78124)
   creationTimestamp: null
   labels:
-    io.kompose.service: hedera-web-service
-  name: hedera-web-service
+    io.kompose.service: hedera-web-service-01
+  name: hedera-web-service-01
 spec:
   ports:
     - name: "8001"
       port: 8001
       targetPort: 11136
   selector:
-    io.kompose.service: hedera-web-service
+    io.kompose.service: hedera-web-service-01
 status:
   loadBalancer: {}

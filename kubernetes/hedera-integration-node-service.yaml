@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f prod_gcloud.yml convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: hedera-integration-node
+  name: hedera-integration-node
+spec:
+  ports:
+    - name: "8181"
+      port: 8181
+      targetPort: 8181
+  selector:
+    io.kompose.service: hedera-integration-node
+status:
+  loadBalancer: {}

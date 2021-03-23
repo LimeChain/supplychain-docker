@@ -5,16 +5,75 @@ networks:
 
 services:
 
-  hedera-web-service:
-    container_name: hedera-web-service
+  hedera-web-service-01:
+    container_name: hedera-web-service-01
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.01
       context: ../HederaWebService
     restart: always
     ports:
       - "8001:11136"
     volumes:
-      - data-hedera:/usr/src/data
+      - data-hedera-01:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-integration-node
+
+  hedera-web-service-02:
+    container_name: hedera-web-service-02
+    build:
+      dockerfile: Dockerfile.02
+      context: ../HederaWebService
+    restart: always
+    ports:
+      - "8002:11136"
+    volumes:
+      - data-hedera-02:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-integration-node
+
+  hedera-web-service-03:
+    container_name: hedera-web-service-03
+    build:
+      dockerfile: Dockerfile.03
+      context: ../HederaWebService
+    restart: always
+    ports:
+      - "8003:11136"
+    volumes:
+      - data-hedera-03:/usr/src/data
+    networks:
+      - hedera-app-network
+    depends_on:
+      - hedera-integration-node
+
+  hedera-mongodb-service:
+    image: 'mongo:latest'
+    container_name: hedera-mongodb-service
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pwc-bat-admin
+      MONGO_INITDB_ROOT_PASSWORD: pwc-bat-admin-pass
+    volumes:
+      - 'mongodbdata:/data/db'
+    networks:
+      - hedera-app-network
+
+  hedera-integration-node:
+    container_name: hedera-integration-node
+    build:
+      dockerfile: Dockerfile
+      context: ../HederaIntegrationNode
+    restart: always
+    ports:
+      - 8181:8181
+    depends_on:
+      - hedera-mongodb-service
     networks:
       - hedera-app-network
 

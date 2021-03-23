@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: data-hedera
-  name: data-hedera
+    io.kompose.service: data-hedera-03
+  name: data-hedera-03
 spec:
   accessModes:
     - ReadWriteOnce
