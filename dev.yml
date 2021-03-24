@@ -5,20 +5,20 @@ networks:
 
 services:
 
-  hedera-mysql-service:
-    image: 'mysql:8.0.23'
-    container_name: hedera-mysql-service
-    command: mysqld --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    env_file:
-      ./config/.env.mysql.dev
-    volumes:
-      - 'dbdata:/var/lib/mysql'
-      - ./config:/docker-entrypoint-initdb.d
-    ports:
-      - 37117:3306
-    networks:
-      - hedera-app-network
+  # hedera-mysql-service:
+  #   image: 'mysql:8.0.23'
+  #   container_name: hedera-mysql-service
+  #   command: mysqld --default-authentication-plugin=mysql_native_password
+  #   restart: unless-stopped
+  #   env_file:
+  #     ./config/.env.mysql.dev
+  #   volumes:
+  #     - 'dbdata:/var/lib/mysql'
+  #     - ./config:/docker-entrypoint-initdb.d
+  #   ports:
+  #     - 37117:3306
+  #   networks:
+  #     - hedera-app-network
 
   hedera-mongodb-service:
     image: 'mongo:latest'
@@ -28,7 +28,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: pwc-bat-admin
       MONGO_INITDB_ROOT_PASSWORD: pwc-bat-admin-pass
     volumes:
-      - 'mongodbdata:/data/db'
+      - 'hedera-mongodb-data:/data/db'
       - './config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'
     networks:
       - hedera-app-network
@@ -47,38 +47,55 @@ services:
     networks:
       - hedera-app-network
 
-  hedera-integration-node:
-    container_name: hedera-integration-node
+  hedera-integration-node-01:
+    container_name: hedera-integration-node-01
     build:
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile-01.dev
       context: ../HederaIntegrationNode
     restart: unless-stopped
     ports:
       - 8181:8181
     volumes:
       - ../HederaIntegrationNode:/usr/src/app
+      - ../HederaIntegrationNode/env/.env.01:/usr/src/app/.env
     depends_on:
       - hedera-mongodb-service
     networks:
       - hedera-app-network
   
-  hedera-web-service-01:
-    container_name: hedera-web-service-01
+  hedera-integration-node-02:
+    container_name: hedera-integration-node-02
     build:
-      dockerfile: dockerfile-01.dev
-      context: ../HederaWebService
+      dockerfile: dockerfile-02.dev
+      context: ../HederaIntegrationNode
     restart: unless-stopped
     ports:
-      - "8001:11136"
+      - 8182:8181
     volumes:
-      - /usr/src/app/node_modules
-      - ../HederaWebService:/usr/src/app
-      - ../HederaWebServiceData01:/usr/src/data
+      - ../HederaIntegrationNode:/usr/src/app
+      - ../HederaIntegrationNode/env/.env.02:/usr/src/app/.env
+    depends_on:
+      - hedera-mongodb-service
     networks:
       - hedera-app-network
-    depends_on:
-      - hedera-mysql-service
-      - hedera-integration-node
+  
+  # hedera-web-service-01:
+  #   container_name: hedera-web-service-01
+  #   build:
+  #     dockerfile: dockerfile-01.dev
+  #     context: ../HederaWebService
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8001:11136"
+  #   volumes:
+  #     - /usr/src/app/node_modules
+  #     - ../HederaWebService:/usr/src/app
+  #     - ../HederaWebServiceData01:/usr/src/data
+  #   networks:
+  #     - hedera-app-network
+  #   depends_on:
+  #     - hedera-mysql-service
+  #     - hedera-integration-node
 
   # hedera-web-service-02:
   #   container_name: hedera-web-service-02
@@ -119,7 +136,7 @@ services:
   #     - hedera-integration-node
 
 volumes:
-  dbdata:
-    driver: local
-  mongodbdata:
+  # dbdata:
+  #   driver: local
+  hedera-mongodb-data:
     driver: local

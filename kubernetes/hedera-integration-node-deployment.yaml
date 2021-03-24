@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose -f prod_gcloud.yml convert
+    kompose.cmd: kompose -f ./prod_gcloud.yml convert
     kompose.version: 1.22.0 (955b78124)
   creationTimestamp: null
   labels:
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose -f prod_gcloud.yml convert
+        kompose.cmd: kompose -f ./prod_gcloud.yml convert
         kompose.version: 1.22.0 (955b78124)
       creationTimestamp: null
       labels:
@@ -25,10 +25,15 @@ spec:
         io.kompose.service: hedera-integration-node
     spec:
       containers:
-        - image: gcr.io/pwc-bat-test/hedera-integration-node:v23
-          name: hedera-integration-node
+        - image: gcr.io/pwc-bat-test/hedera-integration-node-01:v27
+          name: hedera-integration-node-01
           ports:
             - containerPort: 8181
+          resources: {}
+        - image: gcr.io/pwc-bat-test/hedera-integration-node-02:v27
+          name: hedera-integration-node-02
+          ports:
+            - containerPort: 8182
           resources: {}
       restartPolicy: Always
 status: {}

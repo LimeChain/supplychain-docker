@@ -64,14 +64,27 @@ services:
     networks:
       - hedera-app-network
 
-  hedera-integration-node:
-    container_name: hedera-integration-node
+  hedera-integration-node-01:
+    container_name: hedera-integration-node-01
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.01
       context: ../HederaIntegrationNode
     restart: always
     ports:
       - 8181:8181
+    depends_on:
+      - hedera-mongodb-service
+    networks:
+      - hedera-app-network
+
+  hedera-integration-node-02:
+    container_name: hedera-integration-node-02
+    build:
+      dockerfile: Dockerfile.02
+      context: ../HederaIntegrationNode
+    restart: always
+    ports:
+      - 8182:8181
     depends_on:
       - hedera-mongodb-service
     networks:
