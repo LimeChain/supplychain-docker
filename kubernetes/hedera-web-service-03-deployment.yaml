@@ -26,7 +26,7 @@ spec:
         io.kompose.service: hedera-web-service-03
     spec:
       containers:
-        - image: gcr.io/pwc-bat-test/hedera-web-service-03:v27
+        - image: gcr.io/pwc-bat-test/hedera-web-service-03:v31
           name: hedera-web-service-03
           ports:
             - containerPort: 11136
