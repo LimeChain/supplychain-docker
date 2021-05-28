@@ -1,6 +1,6 @@
 # /bin/bash
 
-BUILD_VERSION="v31"
+BUILD_VERSION="v37"
 
 gcloud config configurations activate pwc-bat-test
 export CLOUDSDK_ACTIVE_CONFIG_NAME=pwc-bat-test

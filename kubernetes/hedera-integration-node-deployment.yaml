@@ -25,12 +25,12 @@ spec:
         io.kompose.service: hedera-integration-node
     spec:
       containers:
-        - image: gcr.io/pwc-bat-test/hedera-integration-node-01:v29
+        - image: gcr.io/pwc-bat-test/hedera-integration-node-01:v50
           name: hedera-integration-node-01
           ports:
             - containerPort: 8181
           resources: {}
-        - image: gcr.io/pwc-bat-test/hedera-integration-node-02:v29
+        - image: gcr.io/pwc-bat-test/hedera-integration-node-02:v50
           name: hedera-integration-node-02
           ports:
             - containerPort: 8182
