@@ -61,7 +61,7 @@ services:
       - 8181:8181
     volumes:
       - ../HederaIntegrationNode:/usr/src/app
-      - ../HederaIntegrationNode/env/.env.01:/usr/src/app/.env
+      # - ../HederaIntegrationNode/env/.env.01:/usr/src/app/.env
     depends_on:
       - hedera-mongodb-service
     networks:
@@ -78,7 +78,7 @@ services:
       - 8182:8182
     volumes:
       - ../HederaIntegrationNode:/usr/src/app
-      - ../HederaIntegrationNode/env/.env.02:/usr/src/app/.env
+      # - ../HederaIntegrationNode/env/.env.02:/usr/src/app/.env
     depends_on:
       - hedera-mongodb-service
     networks:
