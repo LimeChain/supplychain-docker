@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-service
@@ -9,15 +9,21 @@ spec:
           - path: /web-01/*
             pathType: Prefix
             backend:
-              serviceName: hedera-web-service-01
-              servicePort: 8001
+              service:
+                name: hedera-web-service-01
+                port: 
+                  number: 8001
           - path: /web-02/*
             pathType: Prefix
             backend:
-              serviceName: hedera-web-service-02
-              servicePort: 8002
+              service:
+                name: hedera-web-service-02
+                port: 
+                  number: 8002
           - path: /web-03/*
             pathType: Prefix  
             backend:
-              serviceName: hedera-web-service-03
-              servicePort: 8003
+              service:
+                name: hedera-web-service-03
+                port: 
+                  number: 8003

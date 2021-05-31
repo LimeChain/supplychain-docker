@@ -26,7 +26,7 @@ spec:
         io.kompose.service: hedera-web-service-03
     spec:
       containers:
-        - image: gcr.io/pwc-bat-test/hedera-web-service-03:v50
+        - image: gcr.io/pwc-bat-test/hedera-web-service-03:v56
           name: hedera-web-service-03
           ports:
             - containerPort: 11136
@@ -37,7 +37,7 @@ spec:
         - name: cloud-sql-proxy
           # It is recommended to use the latest version of the Cloud SQL proxy
           # Make sure to update on a regular schedule!
-          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          image: gcr.io/cloudsql-docker/gce-proxy:latest
           command:
             - "/cloud_sql_proxy"
 
