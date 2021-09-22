@@ -5,7 +5,25 @@ networks:
     ipam:
       driver: default
       config:
-          - subnet: 172.20.0.0/16
+          - subnet: 172.40.0.0/16
+
+volumes:
+  mysqldbdata:
+    driver: local
+  mongodbdata:
+    driver: local
+  hederawebservice01nodemodules:
+    driver: local
+  hederawebservice01builds:
+    driver: local
+  hederawebservice02nodemodules:
+    driver: local
+  hederawebservice02builds:
+    driver: local
+  hederawebservice03nodemodules:
+    driver: local
+  hederawebservice03builds:
+    driver: local
 
 services:
 
@@ -18,7 +36,7 @@ services:
       ./config/.env.mysql.dev
     volumes:
       - 'mysqldbdata:/var/lib/mysql'
-      - ./config:/docker-entrypoint-initdb.d
+      - ./config:/docker-entrypoint-initdb.d:ro
     ports:
       - 37117:3306
     networks:
@@ -56,6 +74,11 @@ services:
     build:
       dockerfile: dockerfile-01.dev
       context: ../HederaIntegrationNode
+      args:
+        USER_ID: $USER_ID
+        USER_NAME: $USER_NAME
+        GROUP_ID: $GROUP_ID
+        GROUP_NAME: $GROUP_NAME
     restart: unless-stopped
     ports:
       - 8181:8181
@@ -66,13 +89,18 @@ services:
       - hedera-mongodb-service
     networks:
       hedera-app-network:
-        ipv4_address: 172.20.0.200
+        ipv4_address: 172.40.0.200
 
   hedera-integration-node-02:
     container_name: hedera-integration-node-02
     build:
       dockerfile: dockerfile-02.dev
       context: ../HederaIntegrationNode
+      args:
+        USER_ID: $USER_ID
+        USER_NAME: $USER_NAME
+        GROUP_ID: $GROUP_ID
+        GROUP_NAME: $GROUP_NAME
     restart: unless-stopped
     ports:
       - 8182:8182
@@ -83,18 +111,24 @@ services:
       - hedera-mongodb-service
     networks:
       hedera-app-network:
-        ipv4_address: 172.20.0.201
+        ipv4_address: 172.40.0.201
   
   hedera-web-service-01:
     container_name: hedera-web-service-01
     build:
       dockerfile: dockerfile-01.dev
       context: ../HederaWebService
+      args:
+        USER_ID: $USER_ID
+        USER_NAME: $USER_NAME
+        GROUP_ID: $GROUP_ID
+        GROUP_NAME: $GROUP_NAME
     restart: unless-stopped
     ports:
       - "8001:11136"
     volumes:
-      - webservicenodemodules:/usr/src/app/node_modules
+      - hederawebservice01nodemodules:/usr/src/app/node_modules
+      - hederawebservice01builds:/usr/src/app/builds
       - ../HederaWebService:/usr/src/app
       - ../HederaWebServiceData01:/usr/src/data
     networks:
@@ -109,12 +143,17 @@ services:
     build:
       dockerfile: dockerfile-02.dev
       context: ../HederaWebService
+      args:
+        USER_ID: $USER_ID
+        USER_NAME: $USER_NAME
+        GROUP_ID: $GROUP_ID
+        GROUP_NAME: $GROUP_NAME
     restart: unless-stopped
     ports:
       - "8002:11136"
     volumes:
-      - /usr/src/app/node_modules
-      - /usr/src/app/builds
+      - hederawebservice02nodemodules:/usr/src/app/node_modules
+      - hederawebservice02builds:/usr/src/app/builds
       - ../HederaWebService:/usr/src/app
       - ../HederaWebServiceData02:/usr/src/data
     networks:
@@ -129,12 +168,17 @@ services:
     build:
       dockerfile: dockerfile-03.dev
       context: ../HederaWebService
+      args:
+        USER_ID: $USER_ID
+        USER_NAME: $USER_NAME
+        GROUP_ID: $GROUP_ID
+        GROUP_NAME: $GROUP_NAME
     restart: unless-stopped
     ports:
       - "8003:11136"
     volumes:
-      - /usr/src/app/node_modules
-      - /usr/src/app/builds
+      - hederawebservice03nodemodules:/usr/src/app/node_modules
+      - hederawebservice03builds:/usr/src/app/builds
       - ../HederaWebService:/usr/src/app
       - ../HederaWebServiceData03:/usr/src/data
     networks:
@@ -143,11 +187,3 @@ services:
       - hedera-mysql-service
       - hedera-integration-node-01
       - hedera-integration-node-02
-
-volumes:
-  mysqldbdata:
-    driver: local
-  mongodbdata:
-    driver: local
-  webservicenodemodules:
-    driver: local

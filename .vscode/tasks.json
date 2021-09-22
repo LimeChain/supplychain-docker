@@ -3,17 +3,17 @@
     "tasks": [
         {
             "label": "Start hedera in docker",
-            "command": "docker-compose -f ./dev.yml -p hedera up",
+            "command": "docker-compose --env-file ./config/users.arg -f ./dev.yml -p hedera up",
             "type": "shell",
             "group": "build",
         }, {
             "label": "Build hedera in docker",
-            "command": "docker-compose -f ./dev.yml -p hedera up --build",
+            "command": "docker-compose --env-file ./config/users.arg -f ./dev.yml -p hedera up --build",
             "type": "shell",
             "group": "build",
         }, {
             "label": "Destroy hedera in docker",
-            "command": "docker-compose -f ./dev.yml -p hedera down",
+            "command": "docker-compose --env-file ./config/users.arg -f ./dev.yml -p hedera down",
             "type": "shell",
             "group": "build",
         }
