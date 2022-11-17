@@ -31,7 +31,7 @@ spec:
               value: pwc-bat-admin-pass
             - name: MONGO_INITDB_ROOT_USERNAME
               value: pwc-bat-admin
-          image: mongo:latest
+          image: mongo:4.4
           name: hedera-mongodb-service
           ports:
             - containerPort: 27017
