@@ -10,11 +10,11 @@ metadata:
   name: hedera-web-service-02
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       io.kompose.service: hedera-web-service-02
-  strategy:
-    type: Recreate
   template:
     metadata:
       annotations:
@@ -26,7 +26,7 @@ spec:
         io.kompose.service: hedera-web-service-02
     spec:
       containers:
-        - image: gcr.io/pwc-bat-test/hedera-web-service-02:v56
+        - image: gcr.io/bat-pwc-demo/hedera-web-service-02:v25
           name: hedera-web-service-02
           ports:
             - containerPort: 11136
@@ -47,7 +47,7 @@ spec:
 
             # Replace DB_PORT with the port the proxy should listen on
             # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
-            - "-instances=pwc-bat-test:europe-west4:hedera=tcp:3306"
+            - "-instances=bat-pwc-demo:europe-west4:hedera=tcp:3306"
           securityContext:
             # The default Cloud SQL proxy image runs as the
             # "nonroot" user and group (uid: 65532) by default.

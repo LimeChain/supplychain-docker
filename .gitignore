@@ -2,3 +2,4 @@
 .DS_Store
 kube-config-prod
 users.arg
+gke_gcloud_auth_plugin_cache

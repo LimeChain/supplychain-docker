@@ -4,11 +4,8 @@ metadata:
   creationTimestamp: null
   name: hedera-app-network
 spec:
+  podSelector: {}
   ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              io.kompose.network/hedera-app-network: "true"
-  podSelector:
-    matchLabels:
-      io.kompose.network/hedera-app-network: "true"
+  - {}
+  policyTypes:
+  - Ingress
